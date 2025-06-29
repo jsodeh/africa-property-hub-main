@@ -211,8 +211,8 @@ const HeroSection = () => {
       
       {/* Hero Content */}
       <div className="relative z-10 container mx-auto px-4">
-        <div className="max-w-4xl">
-          <div className="text-left mb-12">
+        <div className="max-w-4xl mx-auto text-center md:text-left">
+          <div className="mb-12">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
               Agents. Tours.
               <br />
@@ -220,15 +220,17 @@ const HeroSection = () => {
             </h1>
           </div>
 
-          {/* Left-aligned Search Bar on Hero */}
-          <div className="mb-8">
-            <LocationSearch 
-              placeholder="Enter an address, neighborhood, city, or ZIP code"
-              className="max-w-2xl"
-              onLocationSelect={(location) => {
-                console.log('Hero search location selected:', location);
-              }}
-            />
+          {/* Centered Search Bar on Hero */}
+          <div className="mb-8 flex justify-center md:justify-start">
+            <div className="w-full max-w-2xl">
+              <LocationSearch 
+                placeholder="Enter an address, neighborhood, city, or ZIP code"
+                className="w-full"
+                onLocationSelect={(location) => {
+                  console.log('Hero search location selected:', location);
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -17,23 +17,26 @@ const StickyNavigation = ({ isScrolled = false, showSearchInNav = false }: Stick
       isScrolled ? 'shadow-md' : ''
     }`}>
       <div className="container mx-auto px-4">
-        <div className={`flex items-center transition-all duration-300 ${
+        {/* Main Navigation Row */}
+        <div className={`flex items-center justify-between transition-all duration-300 ${
           showSearchInNav ? 'py-2' : 'py-4'
         }`}>
           
-          {/* Logo - Always visible, changes position based on search visibility */}
-          <Link to="/" className={`flex items-center space-x-2 transition-all duration-300 ${
-            showSearchInNav ? 'flex-shrink-0' : 'mx-auto md:mx-0'
+          {/* Logo - Left side when search is shown, center when not */}
+          <div className={`flex items-center transition-all duration-300 ${
+            showSearchInNav ? 'flex-shrink-0' : 'flex-1 justify-center md:justify-start'
           }`}>
-            <div className="w-8 h-8 bg-blue-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">RH</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900 hidden sm:block">Real Estate Hotspot</span>
-          </Link>
+            <Link to="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-blue-700 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">RH</span>
+              </div>
+              <span className="text-xl font-bold text-gray-900 hidden sm:block">Real Estate Hotspot</span>
+            </Link>
+          </div>
 
           {/* Search Bar - Only show when scrolled past hero */}
           {showSearchInNav && (
-            <div className="flex-1 max-w-lg mx-4 md:mx-8">
+            <div className="hidden md:flex flex-1 max-w-lg mx-8">
               <LocationSearch 
                 placeholder="Enter an address, neighborhood, city..."
                 className="w-full"
@@ -44,7 +47,7 @@ const StickyNavigation = ({ isScrolled = false, showSearchInNav = false }: Stick
             </div>
           )}
 
-          {/* Desktop Navigation - Show when search is not visible */}
+          {/* Desktop Navigation Menu - Only show when search is not visible */}
           {!showSearchInNav && (
             <div className="hidden md:flex items-center space-x-8">
               <Link to="/properties" className="text-gray-600 hover:text-blue-700 transition-colors font-medium">
@@ -62,7 +65,7 @@ const StickyNavigation = ({ isScrolled = false, showSearchInNav = false }: Stick
             </div>
           )}
 
-          {/* Desktop Auth Buttons */}
+          {/* Desktop Auth Buttons - Always on the right */}
           <div className="hidden md:flex items-center space-x-3 flex-shrink-0">
             <Link to="/login">
               <Button variant="ghost" className="text-gray-600 hover:text-blue-700">
@@ -83,7 +86,7 @@ const StickyNavigation = ({ isScrolled = false, showSearchInNav = false }: Stick
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 flex-shrink-0 ml-auto"
+            className="md:hidden p-2 flex-shrink-0"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -103,38 +106,40 @@ const StickyNavigation = ({ isScrolled = false, showSearchInNav = false }: Stick
           </div>
         )}
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation Menu */}
         {isMenuOpen && (
           <div className="md:hidden pb-4 border-t border-gray-100">
             <div className="flex flex-col space-y-3 pt-4">
               <Link 
                 to="/properties" 
-                className="text-gray-600 hover:text-blue-700 transition-colors font-medium"
+                className="text-gray-600 hover:text-blue-700 transition-colors font-medium py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Browse Properties
               </Link>
               <Link 
                 to="/agents" 
-                className="text-gray-600 hover:text-blue-700 transition-colors"
+                className="text-gray-600 hover:text-blue-700 transition-colors py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Find Agents
               </Link>
               <Link 
                 to="/services" 
-                className="text-gray-600 hover:text-blue-700 transition-colors"
+                className="text-gray-600 hover:text-blue-700 transition-colors py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Services
               </Link>
               <Link 
                 to="/about" 
-                className="text-gray-600 hover:text-blue-700 transition-colors"
+                className="text-gray-600 hover:text-blue-700 transition-colors py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
               </Link>
+              
+              {/* Mobile Auth Buttons */}
               <div className="pt-4 border-t border-gray-100 space-y-3">
                 <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start text-gray-600 hover:text-blue-700">
