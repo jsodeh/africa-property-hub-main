@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import StickyNavigation from "@/components/StickyNavigation";
 import LocationSearch from "@/components/LocationSearch";
 import { SearchProvider, useSearch } from "@/contexts/SearchContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Sample properties for preview
 const featuredProperties = [
@@ -198,121 +198,43 @@ const featuredProperties = [
 
 const HeroSection = () => {
   const { isSearchFocused } = useSearch();
-  const [showLocationModal, setShowLocationModal] = useState(false);
-
-  const handleCurrentLocation = () => {
-    setShowLocationModal(true);
-  };
-
-  const requestLocationPermission = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log('Location accessed:', position.coords);
-          setShowLocationModal(false);
-          // Here you would typically update the search with the current location
-        },
-        (error) => {
-          console.error('Location access denied:', error);
-          setShowLocationModal(false);
-        }
-      );
-    } else {
-      console.log('Geolocation not supported');
-      setShowLocationModal(false);
-    }
-  };
 
   return (
-    <>
-      <section className="relative min-h-screen flex items-center">
-        {/* Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('/real-estate.jpg')`
-          }}
-        >
-          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-        </div>
-        
-        {/* Hero Content */}
-        <div className="relative z-10 container mx-auto px-4">
-          <div className="max-w-4xl">
-            <div className="text-left mb-12">
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                Agents. Tours.
-                <br />
-                Loans. Homes.
-              </h1>
-            </div>
+    <section className="relative min-h-screen flex items-center">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('/real-estate.jpg')`
+        }}
+      >
+        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+      </div>
+      
+      {/* Hero Content */}
+      <div className="relative z-10 container mx-auto px-4">
+        <div className="max-w-4xl">
+          <div className="text-left mb-12">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+              Agents. Tours.
+              <br />
+              Loans. Homes.
+            </h1>
+          </div>
 
-            {/* Left-aligned Search Bar on Hero */}
-            <div className="mb-8">
-              <LocationSearch 
-                placeholder="Enter an address, neighborhood, city, or ZIP code"
-                className="max-w-2xl"
-                onLocationSelect={(location) => {
-                  console.log('Hero search location selected:', location);
-                }}
-              />
-            </div>
-
-            {/* Current Location Button - Only show when search is focused */}
-            {isSearchFocused && (
-              <Button 
-                variant="outline" 
-                className="bg-white/90 backdrop-blur-sm border-white text-gray-900 hover:bg-white mb-8 transition-all duration-200"
-                onClick={handleCurrentLocation}
-              >
-                <MapPin className="mr-2 h-4 w-4" />
-                Current Location
-              </Button>
-            )}
+          {/* Left-aligned Search Bar on Hero */}
+          <div className="mb-8">
+            <LocationSearch 
+              placeholder="Enter an address, neighborhood, city, or ZIP code"
+              className="max-w-2xl"
+              onLocationSelect={(location) => {
+                console.log('Hero search location selected:', location);
+              }}
+            />
           </div>
         </div>
-      </section>
-
-      {/* Location Permission Modal */}
-      {showLocationModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Location Access</h3>
-              <button
-                onClick={() => setShowLocationModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="mb-6">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin className="h-6 w-6 text-blue-600" />
-              </div>
-              <p className="text-gray-600 text-center">
-                We need access to your location to show you properties near you. This helps us provide more relevant search results.
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowLocationModal(false)}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={requestLocationPermission}
-                className="flex-1"
-              >
-                Allow Access
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
+      </div>
+    </section>
   );
 };
 
@@ -320,6 +242,22 @@ const Index = () => {
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [showPropertyModal, setShowPropertyModal] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [showSearchInNav, setShowSearchInNav] = useState(false);
+
+  // Handle scroll to show/hide search in navigation
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroHeight = window.innerHeight * 0.8; // Hero section height
+      const scrollPosition = window.scrollY;
+      
+      setIsScrolled(scrollPosition > 100);
+      setShowSearchInNav(scrollPosition > heroHeight);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handlePropertyClick = (property: any) => {
     setSelectedProperty(property);
@@ -334,7 +272,7 @@ const Index = () => {
   return (
     <SearchProvider>
       <div className="min-h-screen bg-white">
-        <StickyNavigation />
+        <StickyNavigation isScrolled={isScrolled} showSearchInNav={showSearchInNav} />
         <HeroSection />
 
         {/* Quick Access Cards */}
