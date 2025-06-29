@@ -197,10 +197,8 @@ const featuredProperties = [
 ];
 
 const HeroSection = () => {
-  const { isSearchFocused } = useSearch();
-
   return (
-    <section className="relative min-h-screen flex items-center">
+    <section className="relative min-h-screen flex items-center" id="hero-section">
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -248,14 +246,20 @@ const Index = () => {
   // Handle scroll to show/hide search in navigation
   useEffect(() => {
     const handleScroll = () => {
-      const heroHeight = window.innerHeight * 0.8; // Hero section height
       const scrollPosition = window.scrollY;
+      const heroSection = document.getElementById('hero-section');
+      const heroHeight = heroSection ? heroSection.offsetHeight : window.innerHeight;
       
+      // Show basic scroll effects after 100px
       setIsScrolled(scrollPosition > 100);
-      setShowSearchInNav(scrollPosition > heroHeight);
+      
+      // Show search in nav after scrolling past 70% of hero section
+      setShowSearchInNav(scrollPosition > heroHeight * 0.7);
     };
 
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial state
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
